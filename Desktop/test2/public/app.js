@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const app = firebase.app();
   console.log('Firebase App initialized:', app);
 
+  const db = firebase.firestore();
+  console.log('Firestore initialized:', db);
+
   // 🔹 Auto-redirect if user is already logged in
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
