@@ -1,120 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>GaDIS - View Mandate</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GaDIS - View Mandate</title>
 
-    <link rel="stylesheet" href="Table-Style.css">
-    <link rel="stylesheet" href="global-style.css">
-    <link rel="stylesheet" href="nav-style.css">
-    
- <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.3.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.3.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+  <link rel="stylesheet" href="Table-Style.css">
+  <link rel="stylesheet" href="global-style.css">
+  <link rel="stylesheet" href="nav-style.css">
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      // 🔹 Initialize Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyAQkgQZOvFJ4bTU9ys5pS0cg8QVAbCpRDE",
+        authDomain: "gadis-8a320.firebaseapp.com",
+        projectId: "gadis-8a320",
+        storageBucket: "gadis-8a320.firebasestorage.app",
+        messagingSenderId: "306615637491",
+        appId: "1:306615637491:web:aaba8925f0792d1adeee86",
+        measurementId: "G-T752R0LCDM"
+      };
+
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      console.log("✅ Firestore initialized");
+
+      // 🔹 Create Quarter Selector at top
+      const mainBody = document.querySelector(".main-body");
+      const quarterSelector = document.createElement("div");
+      quarterSelector.innerHTML = `
+        <label for="quarterSelect" style="font-weight: bold;">Select Quarter:</label>
+        <select id="quarterSelect" style="margin-left: 10px; padding: 4px;">
+          <option value="quarter-1">Quarter 1</option>
+          <option value="quarter-2">Quarter 2</option>
+          <option value="quarter-3">Quarter 3</option>
+          <option value="quarter-4">Quarter 4</option>
+        </select>
+      `;
+      mainBody.prepend(quarterSelector);
+
+      // 🔹 Fetch Mandates
+      console.log("Fetching mandates...");
+      const mandatesSnapshot = await db.collection("mandates").get();
+
+      const tableBody = document.getElementById("mandateBody");
+      tableBody.innerHTML = ""; // clear old data if reloaded
+
+      mandatesSnapshot.forEach((doc) => {
+        const data = doc.data();
+        console.log("Mandate loaded:", data);
+        const mandateId = doc.id;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${data["Gad Mandate"] || ""}</td>
+          <td>${data["Cause"] || ""}</td>
+          <td><input type="text" placeholder="Budget"></td>
+          <td><input type="text" placeholder="Status"></td>
+          <td><input type="text" placeholder="HGDG Score"></td>
+          <td><input type="text" placeholder="Office"></td>
+          <td><input type="text" placeholder="Faculty"></td>
+          <td><button class="submit-report" data-id="${mandateId}">Submit</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+
+      // 🔹 Simulated user login (temporary for testing)
+      // Replace this with firebase.auth().onAuthStateChanged() in production
+      const userId = "testUser123"; // change this to match your Firestore user doc ID
+
+      // 🔹 Handle Submit
+      document.addEventListener("click", async (e) => {
+        if (e.target.classList.contains("submit-report")) {
+          const mandateId = e.target.dataset.id;
+          const selectedQuarter = document.getElementById("quarterSelect").value;
+          const row = e.target.closest("tr");
+          const inputs = row.querySelectorAll("input");
+          const [budget, status, hgdg, office, faculty] = [...inputs].map(i => i.value.trim());
+
+          const reportData = {
+            budget,
+            status,
+            hgdg,
+            office,
+            faculty,
+            mandateId,
+            quarter: selectedQuarter,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          };
+
+          try {
+            await db
+              .collection("reports")
+              .doc(`${userId}-rep`)
+              .collection(selectedQuarter)
+              .doc(mandateId)
+              .set(reportData);
+
+            alert(`✅ Report for ${selectedQuarter.toUpperCase()} submitted successfully!`);
+          } catch (error) {
+            console.error("❌ Error submitting report:", error);
+            alert("Failed to submit report. Check console for details.");
+          }
+        }
+      });
+    });
+  </script>
 </head>
+
 <body>
-    <div class="header">
-        <img src="nbg-gdis.png">
-        <div class="title_header">
-            <p>Republic of the Philippines</p>
-            <h1>GENDER AND DEVELOPMENT</h1>
-            <p>West Visayas State University Branch</p>
-            <h3>Information System</h3>
-        </div>
-        <img src="nbg-wvsu.png">
+  <div class="header">
+    <img src="nbg-gdis.png">
+    <div class="title_header">
+      <p>Republic of the Philippines</p>
+      <h1>GENDER AND DEVELOPMENT</h1>
+      <p>West Visayas State University Branch</p>
+      <h3>Information System</h3>
     </div>
+    <img src="nbg-wvsu.png">
+  </div>
 
-    <div id="navbar">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="Accounts-page.html">Account</a>
-        <a class="active" href="mandate_table.html">Mandate</a>
-        <a href="report_log.html">Report</a>
-    </div>
+  <div id="navbar">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="Accounts-page.html">Account</a>
+    <a class="active" href="mandate_table.html">Mandate</a>
+    <a href="report_log.html">Report</a>
+  </div>
 
-    <div class="main-body">
-<!--TABLE CLASS-->
-        <div class="table-holder">
-            <h1 class="report-title"> Mandate Table</h1>
-            <hr>
-            <table>
-
-        <!--Column Tile-->
+  <div class="main-body">
+    <div class="table-holder">
+      <h1 class="report-title">Mandate Table</h1>
+      <hr>
+      <table>
         <colgroup>
-            <col style="width:15%;">
-            <col style="width:25%;">
-            <col style="width:10%;">
-            <col style="width:10%;">
-            <col style="width:10%;">
-            <col style="width:10%;">
-            <col style="width:15%;">
+          <col style="width:20%;">
+          <col style="width:25%;">
+          <col style="width:10%;">
+          <col style="width:10%;">
+          <col style="width:10%;">
+          <col style="width:10%;">
+          <col style="width:10%;">
+          <col style="width:5%;">
         </colgroup>
 
-        <!--Head-Row-->
-        <thead id=head>
-        <tr class="table-header">
-            <th>Projects, Activities and Programs</th>
-            <th>Mandate</th>
+        <thead>
+          <tr class="table-header">
+            <th>GAD Mandate</th>
+            <th>Cause</th>
             <th>Budget</th>
             <th>Status</th>
             <th>HGDG Score</th>
             <th>Office</th>
             <th>Faculty</th>
-        </tr>
+            <th>Action</th>
+          </tr>
         </thead>
-
-        <!--Row-1-->
-        <tr class="table-row" id="row-1">
-            <td> </td>
-            <td></td>
-            <td>  
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        
-        </tr>
-
-         <!--Row-2-->
-        <tr class="table-row" id="row-2"></tr>
-            <td> </td>
-            <td></td>
-            <td>  
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        
-        </tr>
-
-             <!--Row-3-->
-        <tr class="table-row" id="row-3">
-            <td> </td>
-            <td></td>
-            <td>  
-            <td> </td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
-        </tr>
-        
-    </table>
+        <tbody id="mandateBody">
+          <!-- Mandates will be inserted here dynamically -->
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
 </body>
 </html>
