@@ -1,223 +1,173 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>GaDIS - View Report</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GaDIS - View Report</title>
 
-	<link rel="stylesheet" href="report_style.css">
-	<link rel="stylesheet" href="global-style.css">
-	<link rel="stylesheet" href="nav-style.css">
+  <link rel="stylesheet" href="report_style.css">
+  <link rel="stylesheet" href="global-style.css">
+  <link rel="stylesheet" href="nav-style.css">
 
-	 <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.3.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.3.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-	
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      // 🔹 Initialize Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyAQkgQZOvFJ4bTU9ys5pS0cg8QVAbCpRDE",
+        authDomain: "gadis-8a320.firebaseapp.com",
+        projectId: "gadis-8a320",
+        storageBucket: "gadis-8a320.firebasestorage.app",
+        messagingSenderId: "306615637491",
+        appId: "1:306615637491:web:aaba8925f0792d1adeee86",
+        measurementId: "G-T752R0LCDM"
+      };
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+      const db = firebase.firestore();
+
+      firebase.auth().onAuthStateChanged(async (user) => {
+        if (!user) {
+          alert("⚠️ Please log in to access reports.");
+          window.location.href = "index.html";
+          return;
+        }
+
+        const uid = user.uid;
+        console.log("✅ Logged in as:", user.email);
+
+        // 🔹 Fetch user info (determine if admin)
+        const userDoc = await db.collection("accounts").doc(uid).get();
+        const userData = userDoc.exists ? userDoc.data() : {};
+        const isAdmin = userData.isAdmin === true;
+        const userDept = userData.college || "Unknown Department";
+
+        console.log("👤 Role:", isAdmin ? "Admin" : "User");
+
+        // 🔹 Table containers
+        const recentTable = document.querySelector(".recent_container table");
+        const historyTable = document.querySelector(".log_container table tbody") ||
+                             document.querySelector(".log_container table");
+
+        // Clear placeholder rows
+        recentTable.innerHTML = `
+          <tr>
+            <th>Department</th>
+            <th>HGDG</th>
+            <th>Uploader</th>
+            <th>eMail</th>
+            <th>Date</th>
+          </tr>`;
+        historyTable.innerHTML = `
+          <tr>
+            <th>Department</th>
+            <th>HGDG</th>
+            <th>Uploader</th>
+            <th>eMail</th>
+            <th>Date</th>
+          </tr>`;
+
+        // 🔹 Fetch reports depending on role
+        let reports = [];
+
+        if (isAdmin) {
+          // Admin can view all reports from all users
+          const reportsRoot = await db.collection("reports").get();
+          for (const doc of reportsRoot.docs) {
+            const quartersSnap = await doc.ref.listCollections();
+            for (const q of quartersSnap) {
+              const quarterReports = await q.get();
+              quarterReports.forEach(r => reports.push(r.data()));
+            }
+          }
+        } else {
+          // Regular users: only their own reports
+          const reportDoc = db.collection("reports").doc(`${uid}-rep`);
+          const quarters = ["quarter-1", "quarter-2", "quarter-3", "quarter-4"];
+          for (const q of quarters) {
+            const snap = await reportDoc.collection(q).get();
+            snap.forEach(r => reports.push(r.data()));
+          }
+        }
+
+        console.log(`📄 Fetched ${reports.length} reports`);
+
+        // 🔹 Sort by most recent
+        reports.sort((a, b) => {
+          const tA = a.timestamp?.toMillis?.() || 0;
+          const tB = b.timestamp?.toMillis?.() || 0;
+          return tB - tA;
+        });
+
+        // 🔹 Populate "Most Recent Report"
+        if (reports.length > 0) {
+          const latest = reports[0];
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${latest.department || ""}</td>
+            <td>${latest.hgdg || ""}</td>
+            <td>${latest.office || ""}</td>
+            <td>${latest.userEmail || ""}</td>
+            <td>${latest.timestamp?.toDate?.().toLocaleString() || ""}</td>`;
+          recentTable.appendChild(row);
+        } else {
+          const emptyRow = document.createElement("tr");
+          emptyRow.innerHTML = `<td colspan="5" style="text-align:center;">No reports found.</td>`;
+          recentTable.appendChild(emptyRow);
+        }
+
+        // 🔹 Populate "Report History"
+        reports.forEach(r => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${r.department || ""}</td>
+            <td>${r.hgdg || ""}</td>
+            <td>${r.office || ""}</td>
+            <td>${r.userEmail || ""}</td>
+            <td>${r.timestamp?.toDate?.().toLocaleString() || ""}</td>`;
+          historyTable.appendChild(row);
+        });
+      });
+    });
+  </script>
 </head>
+
 <body>
-	<div class="header">
-        <img src="nbg-gdis.png">
-        <div class="title_header">
-            <p>Republic of the Philippines</p>
-            <h1>GENDER AND DEVELOPMENT</h1>
-            <p>West Visayas State University Branch</p>
-            <h3>Information System</h3>
-        </div>
-        <img src="nbg-wvsu.png">
+  <div class="header">
+    <img src="nbg-gdis.png">
+    <div class="title_header">
+      <p>Republic of the Philippines</p>
+      <h1>GENDER AND DEVELOPMENT</h1>
+      <p>West Visayas State University Branch</p>
+      <h3>Information System</h3>
+    </div>
+    <img src="nbg-wvsu.png">
+  </div>
+
+  <div id="navbar">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="Accounts-page.html">Account</a>
+    <a href="mandate_table.html">Mandate</a>
+    <a class="active" href="report_log.html">Report</a>
+  </div>
+
+  <div class="report_container">
+    <div class="recent_container">
+      <h3>Most Recent Report</h3>
+      <hr>
+      <table></table>
     </div>
 
-    <div id="navbar">
-        <a href="dashboard.html">Dashboard</a>
-        <a href="Accounts-page.html">Account</a>
-        <a href="mandate_table.html">Mandate</a>
-        <a class="active" href="report_log.html">Report</a>
+    <h2>Report History</h2>
+    <div class="log_container_border">
+      <div class="log_container">
+        <table></table>
+      </div>
     </div>
-
-	<div class="report_container">
-
-		<div class="recent_container">
-			<h3>Most Recent Report</h3>
-			<hr>
-
-			<table>
-    	    	<colgroup>
-        	    	<col style="width:20%;">
-            		<col style="width:20%;">
-            		<col style="width:20%;">
-	            	<col style="width:20%;">
-    	        	<col style="width:20%;">
-        		</colgroup>
-
-	    		<tr>
-    				<th></th>
-	    			<th></th>
-    				<th></th>
-    				<th></th>
-	      			<th></th>
-    			</tr>
-			</table>
-
-		</div>
-		<h2>Report History</h2>
-
-		<div class="log_container_border">
-		<div class="log_container">
-
-  		<table>
-        	<colgroup>
-            	<col style="width:20%;">
-	            <col style="width:20%;">
-    	        <col style="width:20%;">
-        	    <col style="width:20%;">
-            	<col style="width:20%;">
-        	</colgroup>
-
-		    <tr>
-			    <th>Department</th>
-    			<th>HGDG</th>
-    			<th>Uploader</th>
-    			<th>eMail</th>
-    			<th>Date</th>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-    		<tr>
-		    	<td></td>
-			    <td></td>
-			    <td></td>
-			    <td></td>
-    			<td></td>
-    		</tr>
-  		</table>
-
-		</div>
-		</div>
-	</div>
-
+  </div>
 </body>
 </html>
