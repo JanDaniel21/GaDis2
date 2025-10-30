@@ -31,7 +31,7 @@
       const db = firebase.firestore();
       console.log("✅ Firestore initialized");
 
-      // 🔹 Create Quarter Selector at top
+      // 🔹 Create Quarter Selector
       const mainBody = document.querySelector(".main-body");
       const quarterSelector = document.createElement("div");
       quarterSelector.innerHTML = `
@@ -45,70 +45,90 @@
       `;
       mainBody.prepend(quarterSelector);
 
-      // 🔹 Fetch Mandates
-      console.log("Fetching mandates...");
-      const mandatesSnapshot = await db.collection("mandates").get();
-
-      const tableBody = document.getElementById("mandateBody");
-      tableBody.innerHTML = ""; // clear old data if reloaded
-
-      mandatesSnapshot.forEach((doc) => {
-        const data = doc.data();
-        console.log("Mandate loaded:", data);
-        const mandateId = doc.id;
-
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${data["Gad Mandate"] || ""}</td>
-          <td>${data["Cause"] || ""}</td>
-          <td><input type="text" placeholder="Budget"></td>
-          <td><input type="text" placeholder="Status"></td>
-          <td><input type="text" placeholder="HGDG Score"></td>
-          <td><input type="text" placeholder="Office"></td>
-          <td><input type="text" placeholder="Faculty"></td>
-          <td><button class="submit-report" data-id="${mandateId}">Submit</button></td>
-        `;
-        tableBody.appendChild(row);
-      });
-
-      // 🔹 Simulated user login (temporary for testing)
-      // Replace this with firebase.auth().onAuthStateChanged() in production
-      const userId = "testUser123"; // change this to match your Firestore user doc ID
-
-      // 🔹 Handle Submit
-      document.addEventListener("click", async (e) => {
-        if (e.target.classList.contains("submit-report")) {
-          const mandateId = e.target.dataset.id;
-          const selectedQuarter = document.getElementById("quarterSelect").value;
-          const row = e.target.closest("tr");
-          const inputs = row.querySelectorAll("input");
-          const [budget, status, hgdg, office, faculty] = [...inputs].map(i => i.value.trim());
-
-          const reportData = {
-            budget,
-            status,
-            hgdg,
-            office,
-            faculty,
-            mandateId,
-            quarter: selectedQuarter,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          };
-
-          try {
-            await db
-              .collection("reports")
-              .doc(`${userId}-rep`)
-              .collection(selectedQuarter)
-              .doc(mandateId)
-              .set(reportData);
-
-            alert(`✅ Report for ${selectedQuarter.toUpperCase()} submitted successfully!`);
-          } catch (error) {
-            console.error("❌ Error submitting report:", error);
-            alert("Failed to submit report. Check console for details.");
-          }
+      // 🔹 Wait for Firebase Authentication
+      firebase.auth().onAuthStateChanged(async (user) => {
+        if (!user) {
+          alert("⚠️ You must be logged in to access this page.");
+          window.location.href = "index.html"; // redirect to login
+          return;
         }
+
+        const uid = user.uid;
+        console.log("✅ Logged in as:", user.email);
+
+        // 🔹 Fetch user's department/college info
+        let userDept = "Unknown Department";
+        try {
+          const userDoc = await db.collection("accounts").doc(uid).get();
+          if (userDoc.exists) {
+            userDept = userDoc.data().college || "Unknown Department";
+          }
+        } catch (error) {
+          console.error("Error fetching user department:", error);
+        }
+
+        // 🔹 Fetch Mandates
+        console.log("Fetching mandates...");
+        const mandatesSnapshot = await db.collection("mandates").get();
+
+        const tableBody = document.getElementById("mandateBody");
+        tableBody.innerHTML = "";
+
+        mandatesSnapshot.forEach((doc) => {
+          const data = doc.data();
+          const mandateId = doc.id;
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${data["Gad Mandate"] || ""}</td>
+            <td>${data["Cause"] || ""}</td>
+            <td><input type="text" placeholder="Budget"></td>
+            <td><input type="text" placeholder="Status"></td>
+            <td><input type="text" placeholder="HGDG Score"></td>
+            <td><input type="text" placeholder="Office"></td>
+            <td><input type="text" placeholder="Faculty"></td>
+            <td><button class="submit-report" data-id="${mandateId}">Submit</button></td>
+          `;
+          tableBody.appendChild(row);
+        });
+
+        // 🔹 Handle Report Submission
+        document.addEventListener("click", async (e) => {
+          if (e.target.classList.contains("submit-report")) {
+            const mandateId = e.target.dataset.id;
+            const selectedQuarter = document.getElementById("quarterSelect").value;
+            const row = e.target.closest("tr");
+            const inputs = row.querySelectorAll("input");
+            const [budget, status, hgdg, office, faculty] = [...inputs].map(i => i.value.trim());
+
+            const reportData = {
+              budget,
+              status,
+              hgdg,
+              office,
+              faculty,
+              mandateId,
+              quarter: selectedQuarter,
+              department: userDept,
+              userEmail: user.email,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+              await db
+                .collection("reports")
+                .doc(`${uid}-rep`)
+                .collection(selectedQuarter)
+                .doc(mandateId)
+                .set(reportData);
+
+              alert(`✅ Report for ${selectedQuarter.toUpperCase()} submitted successfully!`);
+            } catch (error) {
+              console.error("❌ Error submitting report:", error);
+              alert("Failed to submit report. Check console for details.");
+            }
+          }
+        });
       });
     });
   </script>
@@ -162,7 +182,7 @@
           </tr>
         </thead>
         <tbody id="mandateBody">
-          <!-- Mandates will be inserted here dynamically -->
+          <!-- Mandates will be dynamically added -->
         </tbody>
       </table>
     </div>
