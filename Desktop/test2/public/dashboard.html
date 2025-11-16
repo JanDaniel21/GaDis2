@@ -1,113 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GaDIS - Dashboard</title>
-    
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="global-style.css">
+    <link rel="stylesheet" href="sidebar_style.css">
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.3.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.3.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-    
 </head>
 <body>
-    <div class="head_container">
-        <div class="display_container">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2 class="logo">Gender and Development Information System</h2>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html" class="active"><i class="fa fa-home"></i>Home</a></li>
+                    <li><a href="Accounts-page.html"><i class="fa fa-user"></i>Accounts</a></li>
+                    <li><a href="report_log.html"><i class="fa fa-list"></i>Reports</a></li>
+                    <li><a href="mandate_table.html"><i class="fa fa-file-text"></i>Mandate</a></li>
+                    <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </aside>
 
-            <div class="budget_progress">
-                <div class="prog_bar">
-                    <div class="bar_body">
-                    <div class="fill" style="width: 70%;"> </div>
-                    </div>
-                    <h1>Current Progress: 50%</h1>
-                </div>
+        <!-- Main content -->
+        <main class="main">
+            <!-- Header -->
+            <header class="topbar">
+                <h1>Dashboard Overview</h1>
+                <input type="text" placeholder="Search..." class="search-bar" />
+            </header>
 
-
-                <div class="budget_display">
-                    <h1>Total Budget Spent</h1>
-                    <p>$500,000/$100,000,000</p>
-                </div>
-            </div>
-
-
-            <div class="recent_report">                
-                <p>Most Recent Reports </p>
-                 <hr>  
-                 
-        <div class="report_container">
-            <div class="report_box">
-                <p>Report Title</p>
-                <p>Department</p>
-                <p>Date Sent</p>
-                </div>
-            <div class="report_box">
-                <p>Report Title</p>
-                <p>Department</p>
-                <p>Date Sent</p>
-                </div>
-            <div class="report_box">
-                <p>Report Title</p>
-                <p>Department</p>
-                <p>Date Sent</p>
-                </div>
-            
-            
-            </div>
-        </div>
+            <!-- Content area -->
+            <section class="content">
+                <div class="box">Box 1</div>
+                <div class="box">Box 2</div>
+                <div class="box">Box 3</div>
+            </section>
+        </main>
     </div>
-</div>
-
-    <div class="control_container">
-        <a href="Accounts-page.html" class="icon_holder"><div class="square_icon">
-            <p><i class="fa fa-user"></i>
-            <br>
-            Accounts</p>
-        </div></a>
-       <a href="mandate_table.html" class="icon_holder"><div class="square_icon">
-            <p><i class="fa fa-table"></i>
-            <br>
-            View Mandate Table</p>
-        </div></a>
-        <a href="report_log.html" class="icon_holder"><div class="square_icon">
-            <p><i class="fa fa-list"></i>
-            <br>
-            View Report Log</p>
-        </div></a>
-
-
-    </div>
- <script>
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        document.getElementById('userEmail').textContent = "Logged in as: " + user.email;
-      } else {
-        // Not logged in → go back to login page
-        window.location.href = "index.html";
-      }
-    });
-
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      firebase.auth().signOut().then(() => {
-        window.location.href = "index.html";
-      });
-    });
-  </script>
 </body>
 </html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaDIS - Mandate</title>
+    <link rel="stylesheet" href="mandate_style.css">
+    <link rel="stylesheet" href="sidebar_style.css">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2 class="logo">Gender and Development Information System</h2>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><i class="fa fa-home"></i>Home</a></li>
+                    <li><a href="Accounts-page.html"><i class="fa fa-user"></i>Accounts</a></li>
+                    <li><a href="report_log.html"><i class="fa fa-list"></i>Reports</a></li>
+                    <li><a href="mandate_table.html"><i class="fa fa-file-text"></i>Mandate</a></li>
+                    <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+
+        <main class="main">
+            <!-- Header -->
+            <header class="topbar">
+                <h1>Create Mandate</h1>
+                <input type="text" placeholder="Search..." class="search-bar" />
+            </header>
+
+            <div class="container">
+                <div class="table-container">
+
+                    <table class="main-table">
+                        <colgroup>
+                            <col style="width:45%;">
+                            <col style="width:45%;">
+                            <col style="width:10%;">
+                        </colgroup>
+
+                         <thead>
+                            <tr>
+                                <th>GaD Mandate</th>
+                                <th>Cause</th>
+                                <th></th>
+                            </tr>
+                         </thead>
+                         <tbody>
+                            <tr>
+                                <td><textarea name="mandate" placeholder="" required>
+ There is insufficient or inadequate IEC materials on Gender and Development concepts and laws in libraries (learning resource centers), textbooks, syllabi, bulletin boards, websites, Facebook, and other multimedia platforms for students, teaching and non-teaching staff, alumni, and other stakeholders./RA 9710 and other related gender laws.
+                                </textarea></td>
+                                <td><textarea name="cause" placeholder="" required>
+ Lack of IEC materials on GAD concepts and gender lawsamong male and female students, teaching and non-teaching personnel, alumni and other stakeholders.
+                                </textarea></td>
+                                <td>
+                                   <button class = "mandate-button edit">Edit</button>
+                                    <button class = "mandate-button delete">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><textarea name="mandate" placeholder="" required>
+ Low level of awareness of female and male first year students in all WVSU campuses on topics related to Gender and Development./RA 11313, RA 9262, RA 9710 and other related laws.
+                                </textarea></td>
+                                <td><textarea name="cause" placeholder="" required>
+ Minimal opportunity of female and male first year students to deepen their understanding on topics related to Gender and Development.
+                                </textarea></td>
+                                <td>
+                                   <button class = "mandate-button edit">Edit</button>
+                                    <button class = "mandate-button delete">Delete</button>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><textarea name="mandate" placeholder="" required>
+ Low level of awareness of the newly hired teaching and non-teaching personnel on GAD-related topics and laws./RA 11313, RA 9262, RA 9710 and other related laws.
+                                </textarea></td>
+                                <td><textarea name="cause" placeholder="" required>
+ Lack of opportunity to widen their understanding and appreciation of GAD-related topics and laws.
+                                </textarea></td>
+                                <td>
+                                   <button class = "mandate-button edit">Edit</button>
+                                    <button class = "mandate-button delete">Delete</button>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><textarea name="mandate" placeholder="" required>
+ Low level of awareness of the newly hired teaching and non-teaching personnel on GAD-related topics and laws./RA 11313, RA 9262, RA 9710 and other related laws.
+                                </textarea></td>
+                                <td><textarea name="cause" placeholder="" required>
+ Lack of opportunity to widen their understanding and appreciation of GAD-related topics and laws.
+                                </textarea></td>
+                                <td>
+                                    <button class = "mandate-button edit">Edit</button>
+                                    <button class = "mandate-button delete">Delete</button>
+                                </td>
+                            </tr>
+                         </tbody>
+                    </table>
+
+                    <div id="bottom-row">
+                        <button id="add-row">Add</button>
+                    </div>
+
+                </div>
+            </div>
+         </main>
+</body>
+</html>

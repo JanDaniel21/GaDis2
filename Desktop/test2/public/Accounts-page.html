@@ -1,71 +1,52 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Simple Website</title>
-<!-- Link to external CSS file -->
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="Accounts-styles.css">
-<link rel="stylesheet" href="global-style.css">
-<link rel="stylesheet" href="nav-style.css">
-
- <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.3.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.3.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.3.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaDIS - Accounts</title>
+    <link rel="stylesheet" href="account_style.css">
+    <link rel="stylesheet" href="sidebar_style.css">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
 </head>
 <body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2 class="logo">Gender and Development Information System</h2>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><i class="fa fa-home"></i>Home</a></li>
+                    <li><a href="Accounts-page.html" class="active"><i class="fa fa-user"></i>Accounts</a></li>
+                    <li><a href="report_log.html"><i class="fa fa-list"></i>Reports</a></li>
+                    <li><a href="mandate_table.html"><i class="fa fa-file-text"></i>Mandate</a></li>
+                    <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </aside>
 
-    	<div class="header">
-        <img src="nbg-gdis.png">
-        <div class="title_header">
-            <p>Republic of the Philippines</p>
-            <h1>GENDER AND DEVELOPMENT</h1>
-            <p>West Visayas State University Branch</p>
-            <h3>Information System</h3>
-        </div>
-        <img src="nbg-wvsu.png">
-    </div>
 
-    <div id="navbar">
-        <a href="dashboard.html">Dashboard</a>
-        <a class="active" href="Accounts-page.html">Account</a>
-        <a href="mandate_table.html">Mandate</a>
-        <a href="report_log.html">Report</a>
-    </div>
+        <main class="main">
+            <!-- Header -->
+            <header class="topbar">
+                <h1>Accounts</h1>
+                <input type="text" placeholder="Search..." class="search-bar" />
+            </header>
 
-    <div class="wrapper">
+            
+            <div class="container">
 
-        <div class="acc-hlder">
+                <button class="holder admin">
+                </button>
+                <button class="holder user">
+                </button>
+                <button class="holder add">
+                </button>
+            </div>
 
-            <button class="account user"> 
-                <div class="icon"> <p><i class="fa fa-user" aria-hidden="true"></i> </p>
-                </div> </button>
 
-            <button class="account admin">
-                <div class="icon">  <p><i class="fa fa-lock" aria-hidden="true"></i></p>
-                </div> </button>
-        </div>
-    
-
-        
-        <div class="main-body"> 
-        <div class="table-wrapper">
-            <table>
+            <div class="list-container">
+              <div class="list-main">
+                 <table>
                 <colgroup>
                     <col style="width:33%;">
                     <col style="width:33%;">
@@ -74,157 +55,90 @@
 
                 <tr>
                     <th>Name</th>
-                    <th>Department</th>
                     <th>Email</th>
+                    <th>Department</th>
                 </tr>
-
                 <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-
-                 <tr>
+                <tr>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
+                </table>
+              </div>
+            </div>
+        </main>
 
-                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
 
-                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-
-                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-
-                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-
-                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-
-                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-
-                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table>
-
-        </div>
     </div>
-        
-    </div>
-
-
-
-
-
-
-</body> 
+</body>
 </html>

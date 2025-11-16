@@ -1,0 +1,176 @@
+.container{
+    width: 95%;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    background-color: rgba(255, 255, 255, 0.705);
+    box-shadow: 0 0 0.5rem #444a;
+    border-radius: 1rem;
+    border: solid 1px #888a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.table-container{
+    width: 100%;
+    margin: 2rem 0;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.637);
+    box-shadow: 0 0 0.5rem #444a;
+    border-radius: 0.5rem;
+    border: solid 1px #888a;
+    overflow: hidden;
+    display:flex;
+    flex-direction: column;
+}
+
+/*Mandate Table*/
+.main-table{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+    min-width: 25rem;
+    overflow: hidden;
+}
+
+.main-table thead tr{
+    font-size: 1rem;
+    background-color: rgb(135, 58, 155);
+    color: #ffffff;
+    text-align: center;
+}
+
+.main-table th,.main-table td {
+    padding: 0.5rem;
+}
+
+
+.main-table tbody tr{
+    background-color: #ede0f0;
+    height: 10rem;
+}
+
+.main-table tr:nth-child(even){
+    background: rgba(210, 186, 224, 0.75);
+}
+
+/*Input Table*/
+.main-table input, .main-table button{
+    width: 100%;
+}
+
+.main-table textarea{
+    width: 100%;
+    height: 5rem;
+    resize: none;
+}
+
+.main-table tr td:nth-child(7){
+    align-items: center;
+    height: 100%;
+}
+
+#bottom-row{
+    width: 100%;
+    height: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+#add-row{
+    transition: all 0.2s;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    background-color: #f8e4ff;
+    border: none;
+}
+
+#add-row:hover{
+    background-color: rgb(184, 124, 199);
+}
+
+/*Create-Button*/
+.bottom-right-container{
+    bottom: 2rem;
+    right: 2rem;
+    position: fixed;
+    z-index: 1;
+}
+
+.button-container{
+    width: 4rem;
+    height: 4rem;
+    border-radius: 0.8rem;
+    border: solid 1px #444a;
+    box-shadow: 0 0 0.5rem #444a;
+    background-color: rgb(121, 52, 138);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom-right-container a{
+    text-decoration: none;
+    color: inherit;
+}
+.button-container i{
+    font-size: 4rem;
+    color: #fff;
+}
+
+/*Inputs*/
+.main-table input{
+    scrollbar-gutter: stable;
+    clip-path: inset(0 round 1rem);
+    overflow-y: hidden;
+    height: 1.4rem;
+    border-radius: 10px;
+    border: none;
+    padding: 0 0.5rem;
+}
+
+.main-table input ::placeholder{
+    color: grey;
+}
+
+.main-table textarea {
+    scrollbar-gutter: stable;
+    border-radius: 10px;
+    border: none;
+    padding: 0.25rem;
+    resize: none; /* prevents manual resizing */
+    width: 100%;
+    height: 7.5rem;
+    box-sizing: border-box;
+}
+
+.main-table textarea ::placeholder{
+    color: grey;
+}
+
+.mandate-button{
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 1rem;
+    border: none;
+    height: 2rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+}
+ .edit{
+    background-color: rgb(215, 144, 215);
+ }
+ .delete{
+    background-color: rgb(209, 112, 112);
+    color: white;
+ }
+
+ .edit:hover{
+    background-color: rgb(255, 192, 228);
+ }
+
+ .delete:hover{
+    background-color: rgb(255, 109, 109);
+ }

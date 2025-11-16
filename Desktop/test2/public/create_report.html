@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaDIS - Mandate</title>
+    <link rel="stylesheet" href="create_report_style.css">
+    <link rel="stylesheet" href="sidebar_style.css">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2 class="logo">Gender and Development Information System</h2>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><i class="fa fa-home"></i>Home</a></li>
+                    <li><a href="Accounts-page.html"><i class="fa fa-user"></i>Accounts</a></li>
+                    <li><a href="report_log.html"><i class="fa fa-list"></i>Reports</a></li>
+                    <li><a href="mandate_table.html"><i class="fa fa-file-text"></i>Mandate</a></li>
+                    <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+
+        <main class="main">
+            <!-- Header -->
+            <header class="topbar">
+                <h1>Create Report</h1>
+                <input type="text" placeholder="Search..." class="search-bar" />
+            </header>
+
+            <div class="container">
+                <div class="table-container">
+
+                    <table class="main-table">
+                        <colgroup>
+                            <col style="width:18%;">
+                            <col style="width:18%;">
+                            <col style="width:11%;">
+                            <col style="width:11%;">
+                            <col style="width:11%;">
+                            <col style="width:11%;">
+                            <col style="width:11%;">
+                            <col style="width:9%;">
+                        </colgroup>
+
+                         <thead>
+                            <tr>
+                                <th>Projects, Activities and Programs (PAPs)</th>
+                                <th>GaD Issue/Mandate</th>
+                                <th>Budget</th>
+                                <th>Status</th>
+                                <th>HGDG</th>
+                                <th>Office</th>
+                                <th>Faculty</th>
+                                <th> </th>
+                            </tr>
+                         </thead>
+                         <tbody>
+                            <tr>
+                                <td>
+                                    <textarea name="pap" placeholder="Name of Project / Activity / Program" required></textarea>
+                                </td>
+                                <td>
+                                    <textarea name="issue" placeholder="GaD Issue/Mandate" required></textarea>
+                                </td>
+                                <td>
+                                    <input type="number" name="budget" placeholder="Budget" min="0" required>
+                                </td>
+                                <td>
+                                    <textarea name="status" placeholder="Status" required></textarea>
+                                </td>
+                                <td>
+                                    <input type="text" name="score" placeholder="Score" required>
+                                </td>
+                                <td>
+                                    <select id="office" name="office" required>
+                                        <option disabled selected>Select Office </option>
+                                        <option value="apple">COC</option>
+                                        <option value="banana">CICT</option>
+                                        <option value="orange">CBM</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select id="office" name="office" required>
+                                        <option disabled selected>Select Faculty </option>
+                                        <option value="apple">COC</option>
+                                        <option value="banana">CICT</option>
+                                        <option value="orange">CBM</option>
+                                    </select>
+                                </td>
+                                <td>
+                                   <button class = "mandate-button delete">Clear</button>
+                                    <button class = "mandate-button edit">Submit</button>
+                                </td>
+                            </tr>
+                         </tbody>
+                    </table>
+
+                    <div id="bottom-row">
+                        <button id="add-row">Add</button>
+                    </div>
+
+                </div>
+            </div>
+         </main>
+</body>
+</html>
