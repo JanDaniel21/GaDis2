@@ -1,191 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GaDIS - View Mandate</title>
-
-  <link rel="stylesheet" href="Table-Style.css">
-  <link rel="stylesheet" href="global-style.css">
-  <link rel="stylesheet" href="nav-style.css">
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore-compat.js"></script>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      // 🔹 Initialize Firebase
-      const firebaseConfig = {
-        apiKey: "AIzaSyAQkgQZOvFJ4bTU9ys5pS0cg8QVAbCpRDE",
-        authDomain: "gadis-8a320.firebaseapp.com",
-        projectId: "gadis-8a320",
-        storageBucket: "gadis-8a320.firebasestorage.app",
-        messagingSenderId: "306615637491",
-        appId: "1:306615637491:web:aaba8925f0792d1adeee86",
-        measurementId: "G-T752R0LCDM"
-      };
-
-      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
-      console.log("✅ Firestore initialized");
-
-      // 🔹 Create Quarter Selector
-      const mainBody = document.querySelector(".main-body");
-      const quarterSelector = document.createElement("div");
-      quarterSelector.innerHTML = `
-        <label for="quarterSelect" style="font-weight: bold;">Select Quarter:</label>
-        <select id="quarterSelect" style="margin-left: 10px; padding: 4px;">
-          <option value="quarter-1">Quarter 1</option>
-          <option value="quarter-2">Quarter 2</option>
-          <option value="quarter-3">Quarter 3</option>
-          <option value="quarter-4">Quarter 4</option>
-        </select>
-      `;
-      mainBody.prepend(quarterSelector);
-
-      // 🔹 Wait for Firebase Authentication
-      firebase.auth().onAuthStateChanged(async (user) => {
-        if (!user) {
-          alert("⚠️ You must be logged in to access this page.");
-          window.location.href = "index.html"; // redirect to login
-          return;
-        }
-
-        const uid = user.uid;
-        console.log("✅ Logged in as:", user.email);
-
-        // 🔹 Fetch user's department/college info
-        let userDept = "Unknown Department";
-        try {
-          const userDoc = await db.collection("accounts").doc(uid).get();
-          if (userDoc.exists) {
-            userDept = userDoc.data().college || "Unknown Department";
-          }
-        } catch (error) {
-          console.error("Error fetching user department:", error);
-        }
-
-        // 🔹 Fetch Mandates
-        console.log("Fetching mandates...");
-        const mandatesSnapshot = await db.collection("mandates").get();
-
-        const tableBody = document.getElementById("mandateBody");
-        tableBody.innerHTML = "";
-
-        mandatesSnapshot.forEach((doc) => {
-          const data = doc.data();
-          const mandateId = doc.id;
-
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${data["Gad Mandate"] || ""}</td>
-            <td>${data["Cause"] || ""}</td>
-            <td><input type="text" placeholder="Budget"></td>
-            <td><input type="text" placeholder="Status"></td>
-            <td><input type="text" placeholder="HGDG Score"></td>
-            <td><input type="text" placeholder="Office"></td>
-            <td><input type="text" placeholder="Faculty"></td>
-            <td><button class="submit-report" data-id="${mandateId}">Submit</button></td>
-          `;
-          tableBody.appendChild(row);
-        });
-
-        // 🔹 Handle Report Submission
-        document.addEventListener("click", async (e) => {
-          if (e.target.classList.contains("submit-report")) {
-            const mandateId = e.target.dataset.id;
-            const selectedQuarter = document.getElementById("quarterSelect").value;
-            const row = e.target.closest("tr");
-            const inputs = row.querySelectorAll("input");
-            const [budget, status, hgdg, office, faculty] = [...inputs].map(i => i.value.trim());
-
-            const reportData = {
-              budget,
-              status,
-              hgdg,
-              office,
-              faculty,
-              mandateId,
-              quarter: selectedQuarter,
-              department: userDept,
-              userEmail: user.email,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            try {
-              await db
-                .collection("reports")
-                .doc(`${uid}-rep`)
-                .collection(selectedQuarter)
-                .doc(mandateId)
-                .set(reportData);
-
-              alert(`✅ Report for ${selectedQuarter.toUpperCase()} submitted successfully!`);
-            } catch (error) {
-              console.error("❌ Error submitting report:", error);
-              alert("Failed to submit report. Check console for details.");
-            }
-          }
-        });
-      });
-    });
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaDIS - Mandate</title>
+    <link rel="stylesheet" href="mandate_style.css">
+    <link rel="stylesheet" href="sidebar_style.css">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
 </head>
-
 <body>
-  <div class="header">
-    <img src="nbg-gdis.png">
-    <div class="title_header">
-      <p>Republic of the Philippines</p>
-      <h1>GENDER AND DEVELOPMENT</h1>
-      <p>West Visayas State University Branch</p>
-      <h3>Information System</h3>
-    </div>
-    <img src="nbg-wvsu.png">
-  </div>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2 class="logo">Gender and Development Information System</h2>
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><i class="fa fa-home"></i>Home</a></li>
+                    <li><a href="Accounts-page.html"><i class="fa fa-user"></i>Accounts</a></li>
+                    <li><a href="report_log.html"><i class="fa fa-list"></i>Reports</a></li>
+                    <li><a href="mandate_table.html" class="active"><i class="fa fa-file-text"></i>Mandate</a></li>
+                    <li><a href="#"><i class="fa fa-gear"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </aside>
 
-  <div id="navbar">
-    <a href="dashboard.html">Dashboard</a>
-    <a href="Accounts-page.html">Account</a>
-    <a class="active" href="mandate_table.html">Mandate</a>
-    <a href="report_log.html">Report</a>
-  </div>
 
-  <div class="main-body">
-    <div class="table-holder">
-      <h1 class="report-title">Mandate Table</h1>
-      <hr>
-      <table>
-        <colgroup>
-          <col style="width:20%;">
-          <col style="width:25%;">
-          <col style="width:10%;">
-          <col style="width:10%;">
-          <col style="width:10%;">
-          <col style="width:10%;">
-          <col style="width:10%;">
-          <col style="width:5%;">
-        </colgroup>
+        <main class="main">
+            <!-- Header -->
+            <header class="topbar">
+                <h1>Mandate Table</h1>
+                <input type="text" placeholder="Search..." class="search-bar" />
+            </header>
 
-        <thead>
-          <tr class="table-header">
-            <th>GAD Mandate</th>
-            <th>Cause</th>
-            <th>Budget</th>
-            <th>Status</th>
-            <th>HGDG Score</th>
-            <th>Office</th>
-            <th>Faculty</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="mandateBody">
-          <!-- Mandates will be dynamically added -->
-        </tbody>
-      </table>
-    </div>
-  </div>
+            <div class="container">
+                <div class="table-container">
+                   <table class="main-table">
+                        <colgroup>
+                            <col style="width:50%;">
+                            <col style="width:50%;">
+                        </colgroup>
+
+                         <thead>
+                            <tr>
+                                <th>GaD Mandate</th>
+                                <th>Cause</th>
+                            </tr>
+                         </thead>
+                         <tbody>
+                            <tr>
+                                <td>There is insufficient or
+                                    inadequate IEC materials on
+                                    Gender and Development
+                                    concepts and laws in libraries
+                                    (learning resource centers),
+                                    textbooks, syllabi, bulletin
+                                    boards, websites, Facebook,
+                                    and other multimedia platforms
+                                    for students, teaching and
+                                    non-teaching staff, alumni, and
+                                    other stakeholders./RA 9710
+                                    and other related gender laws
+                                </td>
+                                <td>
+                                    Lack of IEC materials on
+                                    GAD concepts and gender
+                                    lawsamong male and
+                                    female students, teaching
+                                    and non-teaching
+                                    personnel, alumni and
+                                    other stakeholders.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Low level of awareness of
+                                    female and male first year
+                                    students in all WVSU campuses
+                                    on topics related to Gender and
+                                    Development./RA 11313, RA
+                                    9262, RA 9710 and other related
+                                    laws
+                                </td>
+                                <td>
+                                    Minimal opportunity of
+                                    female and male first year
+                                    students to deepen their
+                                    understanding on topics
+                                    related to Gender and
+                                    Development.
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Low level of awareness of the
+                                    newly hired teaching and
+                                    non-teaching personnel on
+                                    GAD-related topics and
+                                    laws./RA 11313, RA 9262, RA
+                                    9710 and other related laws
+                                </td>
+                                <td>
+                                    Lack of opportunity to
+                                    widen their understanding
+                                    and appreciation of
+                                    GAD-related topics and
+                                    laws.
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Low level of awareness of the
+                                    newly hired teaching and
+                                    non-teaching personnel on
+                                    GAD-related topics and
+                                    laws./RA 11313, RA 9262, RA
+                                    9710 and other related laws
+                                </td>
+                                <td>
+                                    Lack of opportunity to
+                                    widen their understanding
+                                    and appreciation of
+                                    GAD-related topics and
+                                    laws.
+                                </td>
+                            </tr>
+                         </tbody>
+
+                    </table>
+                </div>
+
+                <div class="bottom-right-container">
+                <a href="create_mandate.html">
+                    <div class="button-container">
+                    <i class="fa fa-plus-square"></i>
+                    </div> 
+                </div>
+
+            </div>
+         </main>
 </body>
 </html>
